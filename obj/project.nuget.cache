@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Ks4tjMxongs=",
+  "dgSpecHash": "VMqP/M2vzcM=",
   "success": true,
   "projectFilePath": "/home/cami/Proyectos/techstore/techstore-api/techstore-api.csproj",
   "expectedPackageFiles": [
@@ -89,7 +89,7 @@
     "/home/cami/.nuget/packages/system.memory.data/8.0.1/system.memory.data.8.0.1.nupkg.sha512",
     "/home/cami/.nuget/packages/system.security.cryptography.pkcs/9.0.4/system.security.cryptography.pkcs.9.0.4.nupkg.sha512",
     "/home/cami/.nuget/packages/system.security.cryptography.protecteddata/9.0.4/system.security.cryptography.protecteddata.9.0.4.nupkg.sha512",
-    "/home/cami/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.9/microsoft.aspnetcore.app.ref.10.0.9.nupkg.sha512"
+    "/home/cami/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.10/microsoft.aspnetcore.app.ref.10.0.10.nupkg.sha512"
   ],
   "logs": [
     {
