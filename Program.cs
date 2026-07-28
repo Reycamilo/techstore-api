@@ -34,6 +34,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // Registrar servicios personalizados aquí
 builder.Services.AddTransient<IUsersService, UsersService>();
 
+builder.Services.AddCorsConfiguration(builder.Configuration);
 builder.Services.AddAuthenticationConfig(builder.Configuration);
 
 
