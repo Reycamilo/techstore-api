@@ -4,6 +4,8 @@ using techstore_api.DataBase;
 using techstore_api.Services;
 using techstore_api.Services.Interfaces;
 using techstore_api.Helpers;
+using techstore_api.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +18,21 @@ options.UseSqlServer(builder.Configuration
 builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(ValidarEstadoDeModeloAtributo));
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 
 
 // Registrar servicios personalizados aquí
 builder.Services.AddTransient<IUsersService, UsersService>();
+
 
 
 var app = builder.Build();
