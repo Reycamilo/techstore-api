@@ -17,7 +17,7 @@ options.UseSqlServer(builder.Configuration
 
 // Acceder al contexto de la peticin HTTP
 builder.Services.AddOpenApi();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<AutoMapperProfiles>());
 
 builder.Services.AddControllers(options =>
 {
