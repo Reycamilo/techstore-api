@@ -1,14 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using techstore_api.DataBase;
+using techstore_api.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddDbContext<TiendaDbContext>(options => 
-    options.UseSqlServer(builder.Configuration
-    .GetConnectionString("DefaultConnection")));
+// Add services to the container.
+builder.Services.AddDbContext<TiendaDbContext>(options =>
+options.UseSqlServer(builder.Configuration
+.GetConnectionString("DefaultConnection")));
 
+// Acceder al contexto de la peticin HTTP
 builder.Services.AddOpenApi();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
 
 var app = builder.Build();
 
