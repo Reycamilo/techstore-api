@@ -33,6 +33,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 // Registrar servicios personalizados aquí
 builder.Services.AddTransient<IUsersService, UsersService>();
+builder.Services.AddTransient<IRolesService, RolesService>();
+
 
 builder.Services.AddCorsConfiguration(builder.Configuration);
 builder.Services.AddAuthenticationConfig(builder.Configuration);
@@ -44,10 +46,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
+
+// Configurar archivos estáticos para servir imágenes
+app.UseStaticFiles();
+
+app.UseCors("CorsPolicy");
+
 app.UseAuthentication();
+
 app.UseAuthorization();
+
+app.MapControllers();
+
 app.Run();
