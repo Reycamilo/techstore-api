@@ -6,6 +6,7 @@ using techstore_api.Services.Interfaces;
 using techstore_api.Helpers;
 using techstore_api.Filters;
 using Microsoft.AspNetCore.Mvc;
+using techstore_api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // Registrar servicios personalizados aquí
 builder.Services.AddTransient<IUsersService, UsersService>();
 
+builder.Services.AddAuthenticationConfig(builder.Configuration);
 
 
 var app = builder.Build();
@@ -45,6 +47,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
