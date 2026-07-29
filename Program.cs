@@ -36,6 +36,8 @@ builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IRolesService, RolesService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IFileService, FileService>();
 
 
 builder.Services.AddCorsConfiguration(builder.Configuration);
