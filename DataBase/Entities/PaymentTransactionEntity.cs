@@ -1,6 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using techstore_api.DataBase.Entities.Common;
 
 namespace techstore_api.DataBase.Entities
 
@@ -8,7 +9,7 @@ namespace techstore_api.DataBase.Entities
 /// Transacción de pago asociada a una orden (registro del resultado de la pasarela).
 /// </summary>
 {
-    public class PaymentTransactionEntity
+    public class PaymentTransactionEntity : EntidadBase
     {
         [Required]
         public int OrderId { get; set; }
