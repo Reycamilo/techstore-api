@@ -2,7 +2,7 @@
 namespace techstore_api.Dtos.Payments
 {
     // <summary>Resultado de crear una orden en PayPal.</summary>
-    public class PayPalResults
+    public class PayPalCreateResults
     {
         public bool Success { get; set; }
         public string? PaypalOrderId { get; set; }
