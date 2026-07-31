@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using techstore_api.DataBase;
 using techstore_api.DataBase.Entities;
 using techstore_api.Services.Interfaces;
@@ -48,6 +49,14 @@ namespace techstore_api.Services
                 {
                     return productCategoriesResult;
                 }
+
+                // Inicializar productos de ejemplo
+                var productsResult = await InitializeProductsAsync();
+                if (!productsResult.Success)
+                {
+                    return productsResult;
+                }
+                Console.WriteLine($"📦 {productsResult.Message}");
 
                 Console.WriteLine("✅ Datos inicializados correctamente");
 
@@ -215,6 +224,56 @@ namespace techstore_api.Services
                 {
                     ProductCategoriesCreated = createdCategories
                 }
+            };
+        }
+
+        private async Task<InitializationResult> InitializeProductsAsync()
+        {
+            var vendedor = await _userManager.FindByEmailAsync("vendedor@vendedor.com");
+            if (vendedor == null)
+            {
+                return new InitializationResult
+                {
+                    Success = false,
+                    Message = "No se encontró el vendedor para asignar los productos de ejemplo."
+                };
+            }
+
+            var categorias = await _context.Categories
+                .Where(c => c.Type == "Product")
+                .ToListAsync();
+
+            int CategoriaId(string nombre) =>
+                categorias.FirstOrDefault(c => c.Name == nombre)?.Id ?? categorias.First().Id;
+
+            var productos = new[]
+            {
+                new ProductEntity { Name = "Monitor HP 24\"", Description = "Monitor Full HD de 24 pulgadas con teclado y mouse incluidos.", Price = 189.99m, Stock = 12, CategoryId = CategoriaId("Computadoras"), SellerId = vendedor.Id, ImageUrl = "/images/products/1-20250729153307.png" },
+                new ProductEntity { Name = "PC de Escritorio HP", Description = "Computadora de escritorio ideal para oficina y hogar.", Price = 649.00m, Stock = 6, CategoryId = CategoriaId("Computadoras"), SellerId = vendedor.Id, ImageUrl = "/images/products/20250729153945-676d9508-c29c-4c67-9efe-fdfbca8e8473.png" },
+                new ProductEntity { Name = "iPhone X", Description = "Smartphone Apple iPhone X de 64GB, pantalla Super Retina.", Price = 499.99m, Stock = 8, CategoryId = CategoriaId("Smartphones"), SellerId = vendedor.Id, ImageUrl = "/images/products/20250729155301-a9dcc7d6-265c-4b08-981f-a2846e503032.png" },
+                new ProductEntity { Name = "Teclado Mecánico RGB", Description = "Teclado mecánico retroiluminado con switches rojos.", Price = 39.90m, Stock = 25, CategoryId = CategoriaId("Accesorios"), SellerId = vendedor.Id },
+                new ProductEntity { Name = "Mouse Inalámbrico", Description = "Mouse inalámbrico ergonómico de 2.4GHz.", Price = 15.50m, Stock = 30, CategoryId = CategoriaId("Accesorios"), SellerId = vendedor.Id },
+                new ProductEntity { Name = "Memoria RAM 16GB DDR4", Description = "Módulo de memoria RAM 16GB DDR4 a 3200MHz.", Price = 54.99m, Stock = 20, CategoryId = CategoriaId("Hardware"), SellerId = vendedor.Id },
+            };
+
+            var creados = 0;
+            foreach (var producto in productos)
+            {
+                producto.CreadoPor = "Sistema";
+                producto.ActualizadoPor = "Sistema";
+                producto.FechaCreacion = DateTime.UtcNow;
+                producto.FechaActualizacion = DateTime.UtcNow;
+
+                _context.Products.Add(producto);
+                creados++;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new InitializationResult
+            {
+                Success = true,
+                Message = $"Productos de ejemplo inicializados: {creados} creados"
             };
         }
     }
