@@ -42,7 +42,7 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<IDataInitializationService, DataInitializationService>();
-builder.Services.AddTransient<IPaypalService, PaypalService>();
+builder.Services.AddHttpClient<IPaypalService, PaypalService>();
 builder.Services.AddTransient<ITransactionService, TransactionService>();
 
 
