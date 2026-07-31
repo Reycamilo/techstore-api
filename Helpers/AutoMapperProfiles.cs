@@ -6,6 +6,7 @@ using techstore_api.Dtos.Orders;
 using techstore_api.Dtos.Products;
 using techstore_api.Dtos.Security.Roles;
 using techstore_api.Dtos.Security.Users;
+using techstore_api.Dtos.Transactions;
 
 namespace techstore_api.Helpers
 {
@@ -43,6 +44,13 @@ namespace techstore_api.Helpers
             CreateMap<OrderDetailEditDto, OrderDetailEntity>();
             CreateMap<OrderDetailEntity, OrderDetailDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null));
+
+            // Transacciones
+            CreateMap<TransactionCreateDto, PaymentTransactionEntity>();
+            CreateMap<PaymentTransactionEntity, TransactionDto>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.FechaCreacion))
+                .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.Order != null ? src.Order.Status : string.Empty))
+                .ForMember(dest => dest.OrderTotal, opt => opt.MapFrom(src => src.Order != null ? src.Order.TotalAmount : 0));
         }
     }
 }

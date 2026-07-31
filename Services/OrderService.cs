@@ -72,21 +72,40 @@ namespace techstore_api.Services
 
         public async Task<ResponseDto<object>> CreateAsync(OrderCreateDto dto)
         {
-            // Validar que solo haya un detalle
-            if (dto.OrderDetails == null || dto.OrderDetails.Count != 1)
+            // Validar que la orden tenga al menos un producto (carrito multi-ítem)
+            if (dto.OrderDetails == null || dto.OrderDetails.Count == 0)
             {
                 return new ResponseDto<object>
                 {
                     Status = false,
                     StatusCode = HttpStatusCode.SOLICITUD_INCORRECTA,
-                    Message = "Solo se permite un producto o servicio por orden."
+                    Message = "La orden debe incluir al menos un producto."
                 };
             }
 
-            var detalleDto = dto.OrderDetails[0];
-            decimal unitPrice = 0;
-            if (detalleDto.ProductId.HasValue)
+            decimal total = 0;
+            foreach (var detalleDto in dto.OrderDetails)
             {
+                if (!detalleDto.ProductId.HasValue)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Status = false,
+                        StatusCode = HttpStatusCode.SOLICITUD_INCORRECTA,
+                        Message = "Cada detalle debe especificar un producto."
+                    };
+                }
+
+                if (detalleDto.Quantity < 1)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Status = false,
+                        StatusCode = HttpStatusCode.SOLICITUD_INCORRECTA,
+                        Message = "La cantidad de cada producto debe ser al menos 1."
+                    };
+                }
+
                 var producto = await _contexto.Products.FindAsync(detalleDto.ProductId.Value);
                 if (producto == null)
                 {
@@ -97,6 +116,7 @@ namespace techstore_api.Services
                         Message = $"Producto con ID {detalleDto.ProductId.Value} no encontrado."
                     };
                 }
+
                 if (producto.Stock < detalleDto.Quantity)
                 {
                     return new ResponseDto<object>
@@ -106,23 +126,16 @@ namespace techstore_api.Services
                         Message = $"Stock insuficiente para el producto {producto.Name}."
                     };
                 }
+
                 producto.Stock -= detalleDto.Quantity;
                 _contexto.Products.Update(producto);
-                unitPrice = producto.Price;
-            }
-            else
-            {
-                return new ResponseDto<object>
-                {
-                    Status = false,
-                    StatusCode = HttpStatusCode.SOLICITUD_INCORRECTA,
-                    Message = "Debe especificar un producto."
-                };
+
+                // Forzar el precio unitario desde el producto y acumular el total
+                detalleDto.UnitPrice = producto.Price;
+                total += producto.Price * detalleDto.Quantity;
             }
 
-            // Forzar el precio unitario y el total
-            detalleDto.UnitPrice = unitPrice;
-            dto.TotalAmount = unitPrice * detalleDto.Quantity;
+            dto.TotalAmount = total;
             dto.Status = "PENDIENTE";
 
             var orden = _mapper.Map<OrderEntity>(dto);
