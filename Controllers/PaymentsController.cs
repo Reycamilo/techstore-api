@@ -22,7 +22,7 @@ namespace techstore_api.Controllers
         private readonly TiendaDbContext _context;
 
         public PaymentsController(
-            PaypalService payPal,
+            IPaypalService payPal,
             ITransactionService transactionService,
             TiendaDbContext context)
         {
